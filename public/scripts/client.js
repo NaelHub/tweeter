@@ -4,7 +4,6 @@
 * Reminder: Use (and do all your DOM work in) jQuery's document ready function
 */
 
-
 $(document).ready(function() {
   const loadTweets = function() {
     $.ajax({
@@ -38,7 +37,6 @@ $(document).ready(function() {
     return div.innerHTML;
   };
 
-
   const createTweetElement = function(tweet) {
     let date = new Date(tweet.created_at).toLocaleDateString();
 
@@ -62,8 +60,6 @@ $(document).ready(function() {
     </article>
     `;
   };
-
-
 
   const $newTweet = $('#submit-tweet');
   $newTweet.on('submit', function(event) {
@@ -96,8 +92,4 @@ $(document).ready(function() {
 
     }
   });
-
-
-
-
 });
