@@ -6,8 +6,9 @@ This repository is the starter code for the project: Students will fork and clon
 
 ## Screenshots
 
-!["Desktop Version"](https://github.com/NaelHub/tweeter/blob/master/public/images/Desktopversion.png)
-!["Mobile Version"](https://github.com/NaelHub/tweeter/blob/master/public/images/MobileVersion.png)
+!["Desktop Version"](https://github.com/NaelHub/tweeter/blob/master/public/images/Desktop%20Version.png)
+
+!["Mobile Version"](https://github.com/NaelHub/tweeter/blob/master/public/images/Mobile%20Version.png)
 
 ## Getting Started
 
