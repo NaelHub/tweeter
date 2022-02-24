@@ -1,25 +1,34 @@
-#heading{
+.header {
   height: 400px;
   width: 100%;
-  background-color:rgb(135, 206, 250);
-  background-image: url("https://www.transparenttextures.com/patterns/black-felt.png");  
+  position: relative;
+  background-image: url(http://www.transparenttextures.com/patterns/clean-gray-paper.png);
+  background-color: slategray;
+}
+
+.header .img{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 70px;
+}
+
+.profileImg img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: auto;
 }
 
 .name {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  color: white;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  position: relative;
+  bottom: 10px
 }
 
-.image{
-  display: flex;
-  align-items: center;
-  justify-content: center;
+h2{
+  font-size: 40px;
 }
-
-/* .btn__icon fas fa-angle-double-down {
-  display: flex;
-  color: red;
-  /* justify-content: space-between;
-  align-items: flex-end; */
-/* } */ 

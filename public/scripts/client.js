@@ -1,95 +1,91 @@
-/*
-* Client-side JS logic goes here
-* jQuery is already loaded
-* Reminder: Use (and do all your DOM work in) jQuery's document ready function
-*/
+$(() => {
 
-$(document).ready(function() {
+  $(".toggle").click(function() {
+    $("#nTweet").slideToggle();
+    $("textarea").focus();
+  });
+
+  // our holy grail form .. collects information and submits if correct
+  const $form = $("#nTweet");
+  $form.submit(function(event) {
+    event.preventDefault();
+    if (checkTweetValidity()) {
+      $.ajax({
+        url: "/tweets",
+        type: "POST",
+        data: $(this).serialize(),
+        success: () => {
+          $form[0].reset();
+          loadTweets();
+        }
+      })
+    }
+  })
+  // loading page
   const loadTweets = function() {
     $.ajax({
-      method: 'GET',
-      url: '/tweets',
-
-    }).then((response) => {
-      console.log("RESPONSE: ");
-      console.log(response);
-      renderTweets(response);
-      // $('#tweet-text').val("");
-      $(".counter").text(140);
+      url: "/tweets",
+      method: "GET",
+      datatype: "json",
+      success: (response => {
+        renderTweets(response);
+      })
     });
-  };
-  loadTweets();
-  $('#errorMessage').hide();
+  }
+  loadTweets()
 
-  const renderTweets = function(tweets) {
-    // loops through tweets
-    // calls createTweetElement for each tweet
-    // takes return value and appends it to the tweets container
-    $("#tweets-container").empty();
-    for (let tweet of tweets) {
-      $('#tweets-container').prepend(createTweetElement(tweet));
-    }
-  };
-
-  const escape = function(str) {
+  // cross-site scripting
+  const escape = function(string) {
     let div = document.createElement('div');
-    div.appendChild(document.createTextNode(str));
+    div.appendChild(document.createTextNode(string));
     return div.innerHTML;
-  };
+  }
 
-  const createTweetElement = function(tweet) {
-    let date = new Date(tweet.created_at).toLocaleDateString();
-
+  // took my html and creating tweets here
+  const createTweetElement = function(info) {
+    const fullDate = new Date(info.created_at);
+    const date = (fullDate.getUTCMonth() + 1) + "/" + fullDate.getUTCDate() + "/" + fullDate.getFullYear();
     return `
     <article class="tweet">
     <header>
-    <div class="info">
-    <img src=${tweet.user.avatars} class="avatar"/>
-    <span class="name">${tweet.user.name}</span>
-    </div>
-    <span class="handle">${tweet.user.handle}</span>
+      <div>
+        <span class="avatar"><img src = ${info.user.avatars}></span>
+        <span class="name">${info.user.name}</span>
+      </div>
+      <span class="handle">${info.user.handle}</span>
     </header>
-    <p class="tweetData">${escape(tweet.content.text)}</p>
+    <p class="tweetInfo"> ${escape(info.content.text)}</p>
     <footer>
-    <span class="date">${date}</span>
-    <span class ="icons">
-    <span id="heart" class="fas fa-heart"></span>
-    <span id="retweet" class="fas fa-retweet"></span>
-    <span id="flag" class="fas fa-flag"></span>
+      <span class="date">Created on: ${date}</span>
+      <span class ="icons"> &#127988 &#128257 &#128153</span>
     </footer>
-    </article>
-    `;
-  };
-
-  const $newTweet = $('#submit-tweet');
-  $newTweet.on('submit', function(event) {
-    event.preventDefault();
-    const tweet = $("#tweet-text").val().trim().length;
-    if (!tweet) {
-      $('#errorMessage').text("Tweet cannot be empty!");
-      $('#errorMessage').slideDown("slow");
-      $('#errorMessage').delay(5000).slideUp("slow");
-      return;
+    </article>`
+  }
+  // tweet is in order by last tweet created to oldest .. also rendered
+  const renderTweets = function(tweets) {
+    $("#tweets-container").empty();
+    for (let tweet of tweets) {
+      $("#tweets-container").prepend(createTweetElement(tweet));
     }
+  }
 
-    if (tweet > 140) {
-      $('#errorMessage').text("Tweet can't be longer than 140 characters!");
-      $('#errorMessage').slideDown("slow");
-      $('#errorMessage').delay(5000).slideUp("slow");
-      return;
-    } else {
-      const val = $(this).serialize();
-      $.ajax("/tweets", {
-        method: "POST",
-        data: val,
-      })
-        .then(() => {
-          $('#errorMessage').hide();
-          loadTweets();
-          $("#tweet-text").val("");
+  // is tweet valid?
+  const checkTweetValidity = () => {
+    const length = $("#tweet-text").val().length;
+    $("#empty, #max").removeClass("invalid").slideUp()
+    if (length > 140) {
+      $("#max")
+        .addClass("invalid")
+        .slideDown();
+      return false;
 
-        });
-
+    } else if (length === 0) {
+      $("#empty")
+        .addClass("invalid")
+        .slideDown();
+      return false
     }
-  });
-});
+    else return true
+  }
+
+})
